@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/template.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js" integrity="sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.min.js" integrity="sha512-deBbW1lpMT6h3gvOzmeMPft4pf9CMGjCKc5jSNq2pMSjtkMPuELbd4N3LKXVq/t1t6qco4q3u/XguyqGqlOMjA==" crossorigin="anonymous"></script>
+        <title>開始投票</title>
+    </head>
+
+    <body>
+        <div class="app" id="app">
+            <div class="mask" @click="loginning = false; viewingResult = false" :style="loginning || viewingResult ? { 'backgroundColor': 'rgba(255,255,255,0.25)' } : {'backgroundColor': 'rgba(255,255,255,0)', 'visibility': 'hidden'} "></div>
+
+            <table class="flex-container">
+                <tr>
+                    <th class="hover" @click="toVoting();" :style="pageType == '投票' ? {'textDecoration': 'underline', 'backgroundColor': '#2d7574'} : {}">投票</th>
+                    <th class="hover" @click="toVotingResult();" :style="pageType == '查看投票結果' ? {'textDecoration': 'underline', 'backgroundColor': '#2d7574'} : {}">查看投票結果</th>
+                    <th class="hover">Our Icon</th>
+                    <th class="hover" @click="switchMode">{{mode == "dark" ? '關閉': '開啟'}}深夜模式</th>
+                    <th class="hover">關於我們</th>
+                    <th class="hover" @click="loginning = !loginning" v-if="usr == ''">註冊/登入</th>
+                    <th class="hover" @click="pressLogout()" v-if="usr != ''">Hi, {{usr}}</th>
+                </tr>
+            </table>
+            <div style="height: 4.2em; width: 100%"></div>
+
+            <div class="login_interface" :style="loginning ? {} : { 'opacity': 0, 'visibility': 'hidden' }">
+                <div class="login_style" style="padding: 5% 10% 1% 10%">Username</div>
+                <div class="login_style" align="left"><input class="login" type="text" v-model="U" /></div>
+                <div class="login_style">Password</div>
+                <div class="login_style" style="padding: 1% 10% 0 10%" align="left"><input class="login" type="password" v-model="P" /></div>
+                <div class="login_style" style="padding: 0 10% 0 10%; color: red" v-if="wrong_password">Wrong password</div>
+                <div class="login_style" style="padding: 2% 10% 1% 10%"></div>
+                <div class="login_style" style="padding: 1% 10% 5% 10%" align="left"><input value="登入" type="submit" @click="SendUserPassword()" /></div>
+            </div>
+
+            <div class="result_interface" :style="viewingResult ? {} : { 'transform': 'scale(0)', 'visibility': 'hidden' }"></div>
+
+            <div class="page" v-if="pageType == '投票'">
+                <div class="pageTopic">&nbsp 投票 -【{{ eventTitle }}】</div>
+                <div style="clear: left"></div>
+
+                <table class="pageTable">
+                    <tr class="pageTableTop">
+                        <th class="pageTableTopLeft"></th>
+                        <th v-for="time in unique_times" class="pageTableTopRight">{{time}}</th>
+                    </tr>
+                    <tr v-for="day in days">
+                        <th class="pageTableLeftBottom">{{ParseDay(day)}}</th>
+                        <th v-for="time in unique_times" @click="PressOneDay($event, day + ' : ' + time)" :class="getTimeBlockClass(day, time)"></th>
+                    </tr>
+                </table>
+                <br />
+                <table class="pageTable" v-if="OtherTopic != ''">
+                    <tr style="height: 2.5em">
+                        <th class="customVoteTableTop">{{OtherTopic}}</th>
+                        <th
+                            v-for="option in OtherSchema"
+                            @click="PressOneCustom($event, option)"
+                            :class="OtherHolder[option].includes(usr) ? 'yes': 'no'"
+                            style="padding: 2px 8px 2px 8px; color: black; width: 6em; font-weight: 100; border: 1px solid black"
+                        >
+                            {{option}}
+                        </th>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="page" v-if="pageType == '查看投票結果'">
+                <div class="pageTopic">&nbsp 投票結果 -【{{ eventTitle }}】</div>
+                <div style="clear: left"></div>
+
+                <table class="pageTable">
+                    <tr class="pageTableTop">
+                        <th class="pageTableTopLeft"></th>
+                        <th v-for="time in unique_times" class="pageTableTopRight">{{time}}</th>
+                    </tr>
+                    <tr v-for="day in days">
+                        <th class="pageTableLeftBottom">{{ParseDay(day)}}</th>
+                        <th v-for="time in unique_times" style="font-size: 32px" :class="getResultClass(day, time)" @click="viewingResult=true">{{timeExists(day, time) ? TimeHolder[day + ' : ' + time].length + '人' : ''}}</th>
+                    </tr>
+                </table>
+                <br />
+                <table class="pageTable" v-if="OtherTopic != ''">
+                    <tr style="height: 2.5em">
+                        <th class="customVoteTableTop">{{OtherTopic}}</th>
+                        <th v-for="option in OtherSchema" class="result" style="padding: 2px 8px 2px 8px; width: 6em" @click="viewingResult=true">{{option}} {{OtherHolder[option].length}}人</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script>
+    let data = {
+        eventTitle: "",
+        usr: "",
+        days: [],
+        TimeSchema: [],
+        TimeHolder: {},
+        OtherTopic: "",
+        OtherSchema: [],
+        OtherHolder: {},
+        wrong_password: false,
+        usernames: [],
+
+        key: "",
+        use_custom: false,
+        pageType: "查看投票結果",
+        U: "",
+        P: "",
+        loginning: false,
+        viewingResult: false,
+
+        mode: "white",
+    };
+
+    if (true) {
+        data["mode"] = "dark";
+        document.documentElement.setAttribute("data-theme", "dark");
+    }
+
+    let vm = new Vue({
+        el: "#app",
+        data: data,
+        methods: {
+            ParseDay(day) {
+                d = day.split("-");
+                y = d[0];
+                m = d[1];
+                d = d[2];
+                // return y + '年' + m + '月' + d + '日';
+                return m + "月" + d + "日";
+            },
+            pressLogout() {
+                if (!confirm("登出?")) {
+                    return;
+                }
+                axios.post("#", { data: "logout" }).then((response) => {
+                    window.location.reload();
+                    load_title();
+                    load_selections();
+                });
+            },
+            toVoting() {
+                if (this.usr != "") {
+                    this.pageType = "投票";
+                } else {
+                    this.loginning = true;
+                }
+            },
+            toVotingResult() {
+                this.pageType = "查看投票結果";
+            },
+            getResultClass(day, time) {
+                if (this.timeExists(day, time)) {
+                    return "result";
+                } else {
+                    return "blank";
+                }
+            },
+            SendUserPassword() {
+                axios.post("#", { U: this.U, P: this.P }).then((response) => {
+                    console.log(response);
+                    if (response.data == "success") {
+                        this.wrong_password = false;
+                        window.location.reload();
+                        load_title();
+                        load_selections();
+                    } else {
+                        this.wrong_password = true;
+                    }
+                });
+            },
+            PressOneDay(evt, key) {
+                string = this.TimeHolder[key];
+                if (string.includes(this.usr)) {
+                    temp = this.TimeHolder[key];
+                    temp.splice(temp.indexOf(this.usr), 1);
+                } else {
+                    this.TimeHolder[key].push(this.usr);
+                }
+                form_data = {
+                    data: "pressed",
+                    option: key,
+                };
+                axios.post("#", form_data).then((response) => {
+                    console.log(response);
+                });
+            },
+            PressOneCustom(evt, key) {
+                string = this.OtherHolder[key];
+                if (string.includes(this.usr)) {
+                    temp = this.OtherHolder[key];
+                    temp.splice(temp.indexOf(this.usr), 1);
+                } else {
+                    this.OtherHolder[key].push(this.usr);
+                }
+                form_data = {
+                    data: "pressed",
+                    option: key,
+                };
+                axios.post("#", form_data);
+            },
+            timeExists(day, time) {
+                return this.TimeSchema[day].includes(time);
+            },
+            getTimeBlockClass(day, time) {
+                if (!this.timeExists(day, time)) return "blank";
+                if (this.TimeHolder[day + " : " + time].includes(this.usr)) return "yes";
+                return "no";
+            },
+            switchMode() {
+                if (this.mode == "white") {
+                    this.mode = "dark";
+                    document.documentElement.setAttribute("data-theme", "dark");
+                } else {
+                    this.mode = "white";
+                    document.documentElement.setAttribute("data-theme", "");
+                }
+            },
+        },
+        computed: {
+            username_list() {
+                temp = this.use_custom ? this.OtherHolder[this.key] : this.TimeHolder[this.key];
+                return temp.sort();
+            },
+            unique_times() {
+                times = [];
+                for (day_index = 0; day_index < this.days.length; day_index++) {
+                    day = this.days[day_index];
+                    for (time_index = 0; time_index < this.TimeSchema[day].length; time_index++) {
+                        time = this.TimeSchema[day][time_index];
+                        if (!times.includes(time)) {
+                            times.push(time);
+                        }
+                    }
+                }
+                return times.sort();
+            },
+        },
+    });
+
+    function load_title() {
+        axios.get(window.location + "/title.json").then((response) => {
+            if (!response.data.success) window.location.reload;
+            return_dict = response.data;
+            for (var key in return_dict) {
+                data[key] = return_dict[key];
+            }
+        });
+        console.log("load_title");
+    }
+
+    function load_selections() {
+        axios.get(window.location + "/selections.json").then((response) => {
+            if (!response.data.success) window.location.reload;
+            return_dict = response.data;
+            for (var key in return_dict) {
+                data[key] = return_dict[key];
+            }
+        });
+        console.log("load_selections");
+    }
+    load_title();
+    load_selections();
+</script>

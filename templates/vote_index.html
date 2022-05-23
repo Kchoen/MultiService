@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/template.css" />
+        <link rel="icon" type="image/x-icon" href="/ricardo.ico" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js" integrity="sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.min.js" integrity="sha512-deBbW1lpMT6h3gvOzmeMPft4pf9CMGjCKc5jSNq2pMSjtkMPuELbd4N3LKXVq/t1t6qco4q3u/XguyqGqlOMjA==" crossorigin="anonymous"></script>
+
+        <title>投票系統</title>
+
+        <style>
+            body {
+                font-family: Arial;
+            }
+            html {
+                scroll-behavior: smooth;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="app" id="app">
+            <h1 align="center">創建投票系統</h1>
+            <div class="section1">
+                <h2 align="center">活動名稱</h2>
+                <div style="text-align: center">
+                    <input align="center" placeholder="活動名稱" type="text" style="text-align: center; font-size: 20px; width: 250px" name="eventTitle" v-model="eventTitle" />
+                </div>
+                <h2 align="center">可選日期與時間</h2>
+
+                <div align="center" style="float: left; width: 50%; background-color: white; border: 2px solid #bcccdc; border-radius: 8px; padding: 1em">
+                    <div style="display: grid; grid-template-columns: 11% 78% 11%; margin-top: 0.6em">
+                        <div class="MonthShift" @click="ToLastMonth()">◀</div>
+                        <div class="CalendarTitle">{{currentYear}}/{{("0"+(currentMonth+1)).slice(-2)}}</div>
+                        <div class="MonthShift" @click="ToNextMonth()">▶</div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); margin-top: 1.25em">
+                        <div style="font-size: 1.4em; color: #627d98" v-for="(day, index) in '日一二三四五六'"><b>{{day}}</b></div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); margin-top: 0.25em; transform: translate(1.7%, 0)">
+                        <div :class="get_dateClass(get_dates[Math.floor(j/7)][j%7])" v-for="(dummy, j) in (7 * num_weeks)" @click.self="MouseDownDate(get_dates[Math.floor(j/7)][j%7]);">
+                            {{get_dates[Math.floor(j/7)][j%7] > 0 ? get_dates[Math.floor(j/7)][j%7] : -get_dates[Math.floor(j/7)][j%7]}}
+                        </div>
+                    </div>
+                </div>
+
+                <div align="center" style="border-radius: 8px; border: 1px solid #000; margin: 0px 10px 0px 10px; padding: 0 0 5px 5px; font-size: 32px; float: left; width: 40%; background-color: white">
+                    {{showSelectTimeBlock}}
+                    <div style="width: 90%" class="ez-scrollbar">
+                        <div v-for="t in selectedTimes[showSelectTimeBlock]">
+                            <div style="font-size: 20px" class="removeBox-outer" @mouseover="hovering=t" @mouseleave="hovering=''" @click="hovering=''; temp = selectedTimes[showSelectTimeBlock]; temp.splice(temp.indexOf(t), 1); refresh();">
+                                <div class="removeBox-inner"></div>
+                            </div>
+                            <div style="width: 75%; font-size: 28px" :class="hovering == t ? 'checkBoxStyle-hovered' : 'checkBoxStyle'">{{t}}</div>
+                        </div>
+                    </div>
+                    <div align="center" style="padding-top: 2px">
+                        <select style="font-size: 24px" v-model="startTime">
+                            <option v-for="t in selectable_times">{{t}}</option>
+                        </select>
+                        <span style="font-size: 24px">~</span>
+                        <select style="font-size: 24px" v-model="endTime">
+                            <option v-for="t in selectable_times">{{t}}</option>
+                        </select>
+                        <div class="adding1" @click="add_time()">新增</div>
+                        <div style="clear: left"></div>
+
+                        <div class="ez-scrollbar" style="width: 90%; height: 75px">
+                            <div v-for="t in unique_times" v-if="!selectedTimes[showSelectTimeBlock].includes(t)">
+                                <span align="center" style="font-size: 24px">{{t}}</span>
+                                <div class="adding1" @click="add_time(t)">新增</div>
+                                <div style="clear: right"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="clear: left"></div>
+
+                <section class="accordion" id="設定其他選項">
+                    <label @click="this.use_custom = !this.use_custom; delay('#設定其他選項');">
+                        <input type="checkbox" style="width: 18px; height: 18px" name="設定其他選項" v-model="use_custom" />
+                        設定其他選項
+                    </label>
+                    <div :class="use_custom ? 'content-checked' : 'content'">
+                        <div class="inside_accordion">
+                            <div style="text-align: center; font-size: 24px">
+                                <div><b>投票項目</b></div>
+                                <input align="center" type="text" placeholder="ex: 地點、餐廳、活動" style="text-align: center; margin: 10px 0 10px 0; font-size: 20px; width: 50%" name="voteCat" value="餐廳" />
+                            </div>
+
+                            <div class="ez-scrollbar" style="height: 200px">
+                                <div v-for="(dummy, i) in customCandidates.length">
+                                    <div class="removeBox-outer" @click="customCandidates.splice(i, 1)" v-if="i+1!=customCandidates.length">
+                                        <div class="removeBox-inner"></div>
+                                    </div>
+                                    <div style="float: left; position: relative; width: 2em; height: 2em; padding: 0.1em 0.5em 0.1em 0.1em" v-else></div>
+                                    <input class="custom_input" style="width: 30%" type="text" placeholder="新增選項" v-model="customCandidates[i]" />
+                                    <input class="custom_input" style="width: 58%" type="text" placeholder="備註（詳細資料、網址）" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div style="width: 50%; height: 75%; top: 12%; right: 1%; position: fixed; padding: 10px; border: 1px solid #000; box-sizing: border-box">
+                <h2 align="center">投票畫面預覽</h2>
+                <div class="tabcontent">
+                    <ul class="timeList">
+                        <div v-for="day in selectedDates" v-if="selectedTimes[day].length">
+                            <li class="day">{{ day }}</li>
+                            <li v-for="option in selectedTimes[day]" class="option">{{ option }}</li>
+                            <br />
+                        </div>
+                    </ul>
+                    <ul class="timeList" v-if="use_custom">
+                        <li class="day">{{ voteCat }}</li>
+                        <li v-for="option in filtered_customCandidates" class="option">{{option}}</li>
+                    </ul>
+                </div>
+                <h2 align="center">投票畫面預覽</h2>
+            </div>
+            <button class="add" @click="postAll()">建立投票</button>
+        </div>
+    </body>
+</html>
+
+<script>
+    let data = {
+        eventTitle: "Debugging",
+        use_custom: false,
+        selectedDates: [],
+        voteCat: "餐廳",
+        customCandidates: ["麥當勞", "肯德基", ""],
+        startTime: "20:00",
+        endTime: "22:00",
+        selectedTimes: {},
+
+        currentMonth: 0,
+        currentYear: 0,
+        hovering: "",
+        showSelectTimeBlock: "",
+        new_candidate: "",
+    };
+    today = new Date();
+    data["currentYear"] = today.getFullYear();
+    data["currentMonth"] = today.getMonth();
+    today_string = today.getFullYear() + "-" + ("0" + (today.getMonth() + 1)).slice(-2) + "-" + ("0" + today.getDate()).slice(-2);
+    data["selectedDates"] = [today_string];
+    data["showSelectTimeBlock"] = today_string;
+    data["selectedTimes"][today_string] = ["11:00 - 13:00", "18:00 - 20:00"];
+    let vm = new Vue({
+        el: "#app",
+        data: data,
+        watch: {
+            customCandidates: function () {
+                arr = this.customCandidates;
+                if (arr[arr.length - 1] != "") {
+                    arr.push("");
+                }
+            },
+        },
+        computed: {
+            filtered_customCandidates() {
+                customCandidates = [];
+                for (i = 0; i < this.customCandidates.length; i++) {
+                    if (this.customCandidates[i] != "") {
+                        customCandidates.push(this.customCandidates[i]);
+                    }
+                }
+                return customCandidates;
+            },
+            unique_times() {
+                t = [];
+                for (i = 0; i < this.selectedDates.length; i++) {
+                    temp = this.selectedTimes[this.selectedDates[i]];
+                    for (j = 0; j < temp.length; j++) {
+                        if (!t.includes(temp[j])) {
+                            t.push(temp[j]);
+                        }
+                    }
+                }
+                return t.sort();
+            },
+            selectable_times() {
+                time_list = [];
+                for (i = 0; i < 48; i++) {
+                    hour = ("0" + Math.floor(i / 2).toString()).slice(-2);
+                    minute = i % 2 ? "30" : "00";
+                    time_list.push(hour + ":" + minute);
+                }
+                return time_list;
+            },
+            weekday_index() {
+                firstDayThisMonth = new Date(this.currentYear, this.currentMonth, 1);
+                return firstDayThisMonth.getDay();
+            },
+            num_day_this_month() {
+                d = new Date(this.currentYear, this.currentMonth + 1, 0);
+                return d.getDate();
+            },
+            num_day_last_month() {
+                d = new Date(this.currentYear, this.currentMonth, 0);
+                return d.getDate();
+            },
+            get_dates() {
+                dates_2d = [];
+                for (i = 0; i < 6; i++) {
+                    dates_1d = [];
+                    for (j = 0; j < 7; j++) {
+                        dates_1d.push(this.get_date(i, j));
+                    }
+                    dates_2d.push(dates_1d);
+                }
+                return dates_2d;
+            },
+            num_weeks() {
+                dates = this.get_dates;
+                for (i = 5; i >= 0; i--) {
+                    if (dates[i][0] > 0) {
+                        return i + 1;
+                    }
+                }
+                return 6;
+            },
+        },
+        methods: {
+            postAll() {
+                TimeSchema = [];
+                for (i = 0; i < this.selectedDates.length; i++) {
+                    day = this.selectedDates[i];
+                    times = this.selectedTimes[day];
+                    for (j = 0; j < times.length; j++) {
+                        TimeSchema.push(day + " : " + times[j]);
+                    }
+                }
+                form_data = {
+                    Title: this.eventTitle,
+                    TimeSchema: TimeSchema,
+                    OtherTopic: this.voteCat,
+                    OtherSchema: this.filtered_customCandidates,
+                };
+                axios.post("#", form_data).then((response) => {
+                    window.location = response.data;
+                });
+            },
+            refresh() {
+                this.selectedDates.push("dummy");
+                this.selectedDates.pop();
+            },
+            get_dateClass(day) {
+                if (day < 0) {
+                    return "ignoreDatekBox";
+                } else {
+                    backgroundColor = "#ffdede";
+                    string = this.currentYear + "-" + ("0" + (this.currentMonth + 1)).slice(-2) + "-" + ("0" + day).slice(-2);
+                    if (this.showSelectTimeBlock == string) {
+                        return "onChosenDateBox";
+                    }
+                    if (this.selectedDates.includes(string) && this.selectedTimes[string].length) {
+                        return "chosenDateBox";
+                    }
+                    return "notChosenDateBox";
+                }
+            },
+            get_date(i, j) {
+                d = 7 * i + j;
+                date = d + 1 - this.weekday_index;
+                if (date <= 0) {
+                    return -(date + this.num_day_last_month);
+                } else if (date > this.num_day_this_month) {
+                    return -(date - this.num_day_this_month);
+                } else {
+                    return date;
+                }
+            },
+            MouseDownDate(day) {
+                if (day < 0) return;
+                string = this.currentYear + "-" + ("0" + (this.currentMonth + 1)).slice(-2) + "-" + ("0" + day).slice(-2);
+                this.showSelectTimeBlock = string;
+                if (!this.selectedDates.includes(string)) {
+                    this.selectedDates.push(string);
+                    this.selectedDates.sort();
+                    if (!this.selectedTimes.hasOwnProperty(string)) this.selectedTimes[string] = [];
+                }
+            },
+            ToNextMonth() {
+                if (this.currentMonth == 11) {
+                    this.currentMonth = 0;
+                    this.currentYear += 1;
+                } else {
+                    this.currentMonth += 1;
+                }
+            },
+            ToLastMonth() {
+                if (this.currentMonth == 0) {
+                    this.currentMonth = 11;
+                    this.currentYear -= 1;
+                } else {
+                    this.currentMonth -= 1;
+                }
+            },
+            add_customCandidate() {
+                if (this.new_candidate.trim() == "") return;
+                if (this.customCandidates.includes(this.new_candidate)) return;
+                this.customCandidates.push(this.new_candidate);
+                this.new_candidate = "";
+            },
+            add_time(string = "") {
+                if (string == "") string = this.startTime + " - " + this.endTime;
+                if (this.selectedTimes[this.showSelectTimeBlock].includes(string)) return;
+                this.selectedTimes[this.showSelectTimeBlock].push(string);
+                this.selectedTimes[this.showSelectTimeBlock].sort();
+                // force refreshing
+                // This is the only way I can come up with
+                this.refresh();
+            },
+            delay(URL) {
+                setTimeout(function () {
+                    window.location = URL;
+                }, 200);
+            },
+        },
+    });
+</script>

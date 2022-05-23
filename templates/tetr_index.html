@@ -1,0 +1,62 @@
+<script>
+    if (window.location.href.slice(0, 5) == "http:") {
+        window.location.href = "https:" + window.location.href.slice(5);
+    }
+</script>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!--meta name="google-signin-client_id" content="695627240347-5s6eroi3c7mihq82908943lg54h3ts8v.apps.googleusercontent.com" /!-->
+        <meta name="google-signin-client_id" content="427382144896-9v7u2jk7k57nrqcme558lkm53nss1s1v.apps.googleusercontent.com" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js" integrity="sha512-iqRVtNB+t9O+epcgUTIPF+nklypcR23H1yR1NFM9kffn6/iBhZ9bTB6oKLaGMv8JE9UgjcwfBFg/eHC/VMws+g==" crossorigin="anonymous"></script>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <title>TETR-2P</title>
+        <link rel="stylesheet" href="/tetr/styles.css" />
+    </head>
+    <body>
+        <div id="body">
+            <img id="ghostblock" src="blocks/ghost block.png" />
+            <img id="blueblock" src="blocks/blue block.png" />
+            <img id="greenblock" src="blocks/green block.png" />
+            <img id="lightblueblock" src="blocks/lightblue block.png" />
+            <img id="orangeblock" src="blocks/orange block.png" />
+            <img id="purpleblock" src="blocks/purple block.png" />
+            <img id="orangeblock" src="blocks/orange block.png" />
+            <img id="redblock" src="blocks/red block.png" />
+            <img id="yellowblock" src="blocks/yellow block.png" />
+
+            <img id="darkgreysquare" src="blocks/darkgreysquare.png" />
+            <img id="lightgreysquare" src="blocks/lightgreysquare.png" />
+
+            <img id="rock" src="blocks/linessent block.png" />
+            <img id="bomb" src="blocks/bomb block.png" />
+
+            <img id="bluechunk" src="blocks/blue chunk.png" />
+            <img id="greenchunk" src="blocks/green chunk.png" />
+            <img id="lightbluechunk" src="blocks/lightblue chunk.png" />
+            <img id="orangechunk" src="blocks/orange chunk.png" />
+            <img id="purplechunk" src="blocks/purple chunk.png" />
+            <img id="orangechunk" src="blocks/orange chunk.png" />
+            <img id="redchunk" src="blocks/red chunk.png" />
+            <img id="yellowchunk" src="blocks/yellow chunk.png" />
+            <img id="KOimg" src="blocks/KO.png" />
+        </div>
+        <div class="g-signin2" data-onsuccess="GoogleLogin" style="position: absolute; left: 68%; top: 65%; width: 200px"></div>
+    </body>
+</html>
+
+<script src="/tetr/banner.js"></script>
+<script src="/tetr/chunks.js"></script>
+<script src="/tetr/configs.js"></script>
+<script src="/tetr/utils.js"></script>
+<script src="/tetr/player.js"></script>
+<script src="/tetr/tetr.js"></script>
+<script src="/tetr/login_interface.js"></script>
+<script src="/tetr/login_method.js"></script>
+<script src="/tetr/launch.js"></script>

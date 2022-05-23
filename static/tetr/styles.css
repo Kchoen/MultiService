@@ -1,0 +1,442 @@
+
+:root {
+    --border-color: #000;
+    --app-background: #f2f2f2; /* 222 */
+    --table-background: #d9d9d9; /* 333 */
+    --input-background: #fff; /* 444 */
+    --app-front: #000; /* ddd */
+    --top-front: #eee;
+    --input-front: #000; /* f0f0f0 */
+    --login-front: #000; /* eee */
+    --theme-color: #2f8786;
+    --theme-color-hovered: #2d8584;
+    --theme-color-chosen: #2d7574;
+    --login-background: #eeeeee;
+    --app-background1: #ddd;
+    --app-background2: #ccc;
+}
+
+:root[data-theme="dark"] {
+    --border-color: #000;
+    --app-background: #222; /* 222 */
+    --table-background: #333; /* 333 */
+    --input-background: #444; /* 444 */
+    --app-front: #ddd; /* ddd */
+    --top-front: #eee;
+    --input-front: #f0f0f0; /* f0f0f0 */
+    --login-front: #eee; /* eee */
+    --theme-color: #1f6766; /**2f8786 **/
+    --theme-color-hovered: #196160; /** 2d8584 **/
+    --theme-color-chosen: #155756; /**2d7574 **/
+    --login-background: #bbbbbb;
+    --app-background1: #444;
+    --app-background2: #555;
+}
+
+g-signin2 {
+    position: absolute;
+    top: 45%;
+    left: 22%;
+    margin-top: -50px;
+    margin-left: -50px;
+}
+
+body {
+    background: #000;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 2em;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+
+.player {
+    position: absolute;
+    display: block;
+
+    /* background-image :url('imgs/player-background.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%; */
+}
+
+.player > canvas[class^="next-"] {
+    position: absolute;
+    left: calc(450 / 540 * 100%);
+    width: calc(60 / 540 * 100%);
+    height: calc(60 / 750 * 100%);
+}
+
+.player > .next-1 { top: calc(160 / 750 * 100%); }
+.player > .next-2 { top: calc(260 / 750 * 100%); }
+.player > .next-3 { top: calc(360 / 750 * 100%); }
+.player > .next-4 { top: calc(460 / 750 * 100%); }
+.player > .next-5 { top: calc(560 / 750 * 100%); }
+
+canvas {
+    border: solid 0.1em #fff;
+    height: 80vh;
+}
+
+.Icon,
+.Name {
+    position: absolute;
+    top: calc(10 / 750 * 100%);
+    height: calc(80 / 750 * 100%);
+}
+.Icon {
+    left: calc(100 / 540 * 100%);
+    width: calc(80 / 540 * 100%);
+}
+
+.Name {
+    font-size: 66.66%;
+    left: calc(200 / 540 * 100%);
+    width: calc(300 / 540 * 100%);
+}
+
+.holder {
+    position: absolute;
+    width: calc(60 / 540 * 100%);
+    height: calc(60 / 750 * 100%);
+    top: calc(160 / 750 * 100%);
+    left: calc(30 / 540 * 100%);
+}
+
+.tetr {
+    position: absolute;
+    top: calc(110 / 750 * 100%);
+    left: calc(120 / 540 * 100%);
+    width: calc(300 / 540 * 100%);
+    height: calc(615 / 750 * 100%);
+}
+
+/*  */
+
+.border-word-next,
+.border-word-hold,
+.border-word-KO,
+.border-word-SentLines {
+    position: absolute;
+    font: Impact;
+    color: black;
+    text-shadow: #fff 0px 0px 2px, #fff 0px 0px 2px, #fff 0px 0px 2px, #fff 0px 0px 2px, #fff 0px 0px 2px, #fff 0px 0px 2px;
+
+}
+
+.border-word-next {
+    font-size: 5.3vh;
+    top: calc(100 / 750 * 100%);
+    left: calc(435 / 540 * 100%);
+}
+.border-word-hold {
+    font-size: 5.3vh;
+    top: calc(100 / 750 * 100%);
+    left: calc(15 / 540 * 100%);
+}
+
+.border-word-KO {
+    font-size: 5.3vh;
+    top: calc(250 / 750 * 100%);
+    left: calc(20 / 540 * 100%);
+}
+
+.border-word-SentLines {
+    font-size: 4.5vh;
+    top: calc(385 / 750 * 100%);
+    left: calc(15 / 540 * 100%);
+    line-height: 1em;
+}
+
+.KO {
+    position: absolute;
+    top: calc(300 / 750 * 100%);
+    left: calc(30 / 540 * 100%);
+    width: calc(60 / 540 * 100%);
+}
+
+.Sent {
+    position: absolute;
+    top: calc(450 / 750 * 100%);
+    left: calc(30 / 540 * 100%);
+    width: calc(60 / 540 * 100%);
+}
+
+.CountDown,
+.GameExplain,
+.RETURN {
+    z-index: 400;
+    color: var(--app-front);
+    position: absolute;
+    left: calc(40vw);
+    width: calc(20vw);
+    font-size: 3.5vh;
+    top: calc(14vh);
+    height: calc(10vh);
+}
+
+.GameExplain {
+    top: calc(30vh);
+    font-size: 3.5vh;
+}
+
+.CountDown {
+    font-size: 10vh;
+}
+
+.RETURN {
+    top: calc(55vh);
+}
+
+
+.defense,
+.attack {
+    z-index: 1000;
+    position: absolute;
+    border: 0px solid #00ffff;
+    box-shadow: inset 0 0 1px 2px #00ffff, 0 0 1px 2px #00ffff;
+    border-radius: 6px;
+}
+
+.attack {
+    position: fixed;
+}
+
+.abcRioButtonContents > * {
+    font-size: 28px;
+    color: #555;
+}
+
+.startBTN {    
+    color: #ddd;
+    background-color:green;
+    border-radius: 50px;
+    width: 400px;
+    height: 100px;
+    font-size: 48px;
+    border: none;
+}
+
+.startBTN:hover {    
+    background-color:#007000;
+}
+
+
+
+
+
+
+/*------------------------------------------------------------------ */
+
+
+.bg {
+    width: 100vw;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: 100vh;
+    background-color: var(--app-background);
+    z-index: -100;
+    transition: 0.5s;
+    position: fixed;
+}
+
+input.login {
+    width: 100%;
+    background-color: var(--login-background);
+    color: black;
+    border-radius: 4px;
+    border: 1px #aaa solid;
+}
+
+.otherinput {
+    height: 30px;
+    font-size: 18px;
+    background-color: var(--input-background);
+    color: var(--input-front);
+}
+
+.option {
+    display: inline-block;
+    width: 20%;
+    height: 28px;
+    font-size: 20px;
+    margin: 2px;
+    color: #333;
+    text-align: center;
+}
+
+th {
+    text-align: center;
+}
+
+.flex-container {
+    transition: 0.3s;
+    position: fixed;
+    height: 12.5vh;
+    font-size: 24px;
+    color: var(--top-front);
+    background-color: var(--theme-color);
+    width: 100%;
+    z-index: 100;
+    top: 0;
+    border-collapse: collapse;
+}
+
+.hover {
+    width: 12.5%;
+    cursor: pointer;
+}
+
+.hover:hover {
+    background-color: var(--theme-color-hovered);
+    text-decoration: underline;
+}
+
+.mask {
+    z-index: 500;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    transition: 0.5s;
+    background-color: rgba(255, 255, 255, 0.25);
+}
+.login_interface {
+    overflow: hidden;
+    z-index: 1000;
+    transition: 0.5s;
+    background-color: var(--app-background);
+    width: 20%;
+    position: fixed;
+    top: 20%;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    box-shadow: 2px 2px 32px -4px rgba(0, 0, 0, 1);
+    border-radius: 10px;
+    border: 1px #bbb solid;
+    font-size: 24px;
+    padding-bottom: 24px;
+}
+
+.login_style {
+    padding: 1% 10% 1% 10%;
+    color: var(--login-front);
+}
+
+input.loginBtn {
+    /*  width: 95%; */
+    width: 100%;
+    height: 30px;
+    background-color: var(--input-background);
+    color: var(--input-front);
+}
+
+table.explainTable {
+    margin-top: 16px;
+    color: var(--app-front);
+}
+
+.dropdown-menu {
+    background-clip: padding-box;
+    background-color: #303030;
+    box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
+    font-size: 20px;
+    list-style: none;
+    margin: 0 0 0;
+    width: 100%;
+    min-width: 160px;
+    padding: 8px 0;
+    position: absolute;
+    text-align: left;
+    top: 100%;
+    box-sizing: border-box;
+    line-height: 1.428571429;
+    transition: 0.5s;
+    display: none;
+}
+
+.dropdown-list {
+    clear: both;
+    color: #fff;
+    display: block;
+    font-weight: 400;
+    line-height: 1.428571429;
+    padding: 3px 30px;
+    white-space: nowrap;
+}
+
+.dropdown-list:hover {
+    background-color: green;
+}
+
+.abcRioButtonContents > * {
+    font-size: 24px;
+    color: #555;
+}
+
+body {
+    color: var(--input-front);
+}
+
+.RANK {
+    float: left;
+    width: 40vw;
+    height: 80vh;
+    margin-top: 1.5vh;
+    margin-left: 5vw;
+    overflow: auto;
+    padding: 2px 2px 2px 2px;
+    scrollbar-face-color: #ce7e00;
+    scrollbar-shadow-color: #ffffff;
+    scrollbar-highlight-color: #6f4709;
+    scrollbar-3dlight-color: #111111;
+    scrollbar-darkshadow-color: #6f4709;
+    scrollbar-track-color: #ffe8c1;
+    scrollbar-arrow-color: #6f4709;
+}
+
+.ruletable {
+    background-color: #f8f9fa;
+    color: #202122;
+    border: 1px solid #a2a9b1;
+    border-collapse: collapse;
+    font-size: calc(3.5vh);
+}
+
+.ruletable > * > tr > th, .ruletable > * > tr > td {
+    border: 1px solid #a2a9b1;
+    padding: 0.2em 0.4em;
+}
+
+
+.rankBoard {
+    border-collapse: collapse;
+    background: var(--app-background1);
+}
+
+.rankBoard th {
+    background-color: #326295;
+    font-weight: bold;
+    color: var(--app-front);
+    white-space: nowrap;
+    background-color: #2ea879;
+    padding: 1em 1.5em;
+    text-align: left;
+}
+
+.rankBoard td {
+    padding: 0.2em 1.5em;
+    text-align: left;
+}
+
+.rankBoard tr:nth-child(2n-1) {
+    background-color: var(--app-background2);
+    transition: all 0.125s ease-in-out;
+}
+.rankBoard tr:hover {
+    background-color: rgba(50, 98, 149, 0.3);
+}
