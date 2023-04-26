@@ -1,17 +1,17 @@
 const Sequelize = require("sequelize");
 
-const TetrDB = new Sequelize("tetrisdb", "root", "password", {
+const TetrDB = new Sequelize("tetrisdb", "user", "password", {
     dialect: "mysql",
     host: "localhost",
     logging: false,
     query: { raw: true },
 });
-const VoteDB = new Sequelize("votedb", "root", "password", {
+const VoteDB = new Sequelize("votedb", "user", "password", {
     dialect: "mysql",
     host: "localhost",
     logging: false,
 });
-const QuestDB = new Sequelize("questdb", "root", "password", {
+const QuestDB = new Sequelize("questdb", "user", "password", {
     dialect: "mysql",
     host: "localhost",
     logging: false,

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>File Upload</title>
+</head>
+<body>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <label for="file">Select file to upload:</label>
+    <input type="file" name="file" id="file">
+    <input type="submit" value="Upload">
+  </form>
+  <div id="files-list"></div>
+  <div><br>----------------              ----------------<br></div>
+  <form id="comment-form">
+    <label for="name-input">Name:</label>
+    <input type="text" id="name-input" name="name" required>
+  
+    <label for="comment-input">Comment:</label>
+    <textarea id="comment-input" name="comment" required></textarea>
+  
+    <button type="submit">Submit</button>
+  </form>
+  <ul id="comments-list"></ul>
+  <script src="/file/script.js"></script>
+  <script src="/file/comment.js"></script>
+</body>
+</html>

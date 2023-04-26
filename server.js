@@ -33,15 +33,16 @@ app.use(session(sess));
 app.get("/", (req, res) => {
     util.handleService(util.setService("get", res, req));
 });
+
+app.get("/favicon.ico", (req, res) => {
+    res.sendFile("ricardo.ico", { root: __dirname + "/static" });
+});
+
 app.get("/:ServiceToken", (req, res) => {
     util.handleService(util.setService("get", res, req));
 });
 app.get("/:ServiceToken/:ReqData", (req, res) => {
     util.handleService(util.setService("get", res, req));
-});
-
-app.get("/favicon.ico", (req, res) => {
-    res.sendFile("ricardo.ico", { root: __dirname + "/static" });
 });
 
 app.post("/", function (req, res) {
@@ -51,6 +52,10 @@ app.post("/", function (req, res) {
 app.post("/:ServiceToken", (req, res) => {
     util.handleService(util.setService("post", res, req));
 });
+
+app.delete("/:ServiceToken/:ReqData",(req,res)=>{
+    util.handleService(util.setService("delete", res, req));
+})
 
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);

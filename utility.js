@@ -1,8 +1,13 @@
 const web = require("./HandleWeb");
 const vote = require("./HandleVote");
 const tetr = require("./HandleTetr");
+const file = require("./HandleFile");
+
 
 function handleService(service) {
+    if(service.Domain == undefined){
+        pass
+    }
     Domain = service.Domain;
     Type = service.Type;
     if (Domain == "vote") {
@@ -17,20 +22,42 @@ function handleService(service) {
         } else {
             tetr.handleTetrPost(service);
         }
-    } else if (Domain == "web") {
+    } else if (Domain == "www") {
         if (Type == "get") {
             web.handleWebGet(service);
         }
+    }else if (Domain == "file") {
+        if (Type == "get") {
+            file.handleFileGet(service);
+        }
+        else if (Type == "post") {
+            file.handleFilePost(service);
+        }
+        if (Type == "delete") {
+            file.handleFileDelete(service);
+        }
+    } else if(Domain == "redirect"){
+        service.res.redirect("https://www.kchoen.com");
     }
 }
 function setService(Type, res, req) {
-    return {
-        Type: Type,
-        Domain: req.get("host").split(".")[0],
-        res: res,
-        req: req,
-        Params: req.params.ServiceToken,
-        ReqData: req.params.ReqData,
+    dom = req.get("host").split(".")[0]
+    if (req.get("host").split(".").length==2) dom = "redirect";
+    if(["vote","tetr","www","file"].includes(dom))
+        return {
+            Type: Type,
+            Domain: dom,
+            res: res,
+            req: req,
+            Params: req.params.ServiceToken,
+            ReqData: req.params.ReqData,
+        };
+    else {
+        return {
+            Type: Type,
+            Domain: "redirect",
+            res: res,
+        }
     };
 }
 function voteInit() {
