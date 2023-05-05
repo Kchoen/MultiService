@@ -1,16 +1,8 @@
-const multer = require('multer');
+
 const fs = require('fs');
 const path = require('path');
 
-const storage = multer.diskStorage({
-    destination: 'upload/',
-    filename: function (req, file, cb) {
-      const ext = path.extname(file.originalname);
-      const filename = path.basename(file.originalname, ext);
-      cb(null, `${filename}${ext}`);
-    }
-  });
-const upload = multer({ storage });
+
 
 function handleFileGet(service) {
     res = service.res;
@@ -60,6 +52,19 @@ function handleFileGet(service) {
 }
 function handleFilePost(service) {
     res = service.res;
+    req = service.req;
+    try{
+    
+        if(service.Params=='upload'){
+            console.log("upload!!");
+            upload(req,res,function (err){});
+            res.redirect("/");
+            return;
+        }
+    } catch(e) {
+        console.log("upload error.");
+        return;
+    }
     const { name, comment } = service.req.body;
     console.log(service.req.body);
     // Create a new comment object with a unique ID
