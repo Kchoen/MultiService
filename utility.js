@@ -36,8 +36,11 @@ function handleService(service) {
         if (Type == "delete") {
             file.handleFileDelete(service);
         }
-    } else if(Domain == "redirect"){
-        service.res.redirect("https://www.kchoen.com");
+    } else {
+        // service.res.redirect("https://www.kchoen.com");
+        if (Type == "get") {
+            web.handleWebGet(service);
+        }
     }
 }
 function setService(Type, res, req) {
