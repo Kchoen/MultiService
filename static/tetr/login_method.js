@@ -40,19 +40,19 @@ function SendUserPassword() {
         }
     });
 }
-function GoogleLogin(GoogleUser) {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-        var profile = GoogleUser.getBasicProfile();
-        axios.post("/", { PTYPE: "reg", UID: profile.getId(), NAME: profile.getName(), PW: profile.getEmail(), ICON: profile.getImageUrl(), Method: "Google" }).then((response) => {
-            r = response.data;
-            if (r.TOKEN != false) {
-                PersonalData = { TOKEN: r.TOKEN, UID: r.UID, NAME: r.NAME, elo: r.elo };
-                toLoginPage();
-            } else {
-                $("#wrongpw").css("display", "block");
-                $("#wrongpw").html("尚未註冊");
-            }
-        });
-    });
-}
+// function GoogleLogin(GoogleUser) {
+//     var auth2 = gapi.auth2.getAuthInstance();
+//     auth2.signOut().then(function () {
+//         var profile = GoogleUser.getBasicProfile();
+//         axios.post("/", { PTYPE: "reg", UID: profile.getId(), NAME: profile.getName(), PW: profile.getEmail(), ICON: profile.getImageUrl(), Method: "Google" }).then((response) => {
+//             r = response.data;
+//             if (r.TOKEN != false) {
+//                 PersonalData = { TOKEN: r.TOKEN, UID: r.UID, NAME: r.NAME, elo: r.elo };
+//                 toLoginPage();
+//             } else {
+//                 $("#wrongpw").css("display", "block");
+//                 $("#wrongpw").html("尚未註冊");
+//             }
+//         });
+//     });
+// }
